@@ -1,0 +1,43 @@
+<h1>Galeries#index</h1>
+<div id='contenido'>
+<% @galeries.each do |elemento| %>
+<%= image_tag elemento.image_url(:medium)%>
+<% end %>
+</div>
+
+<p id="loading">
+	<img src="http://blog.teamtreehouse.com/wp-content/uploads/2015/05/InternetSlowdown_Day.gif" alt="Loading…" />
+</p>
+
+<script type="text/javascript">
+$('#loading').hide();
+$(document).ready(function() {
+	var win = $(window);
+	var mecount = 1;
+
+
+	// Each time the user scrolls
+	win.scroll(function() {
+		// End of the document reached?
+		if ($(document).height() - win.height() == win.scrollTop()) {
+			$('#loading').show();
+
+
+			$.ajax({
+				url: '<%=galeries_index_continue_path %>',
+				dataType: 'json',
+				data: {page:mecount},
+				success: function(obj) {
+					debugger
+					$.each(obj.galeries,function(){
+						$('#contenido').append("<img src='"+this.image.medium.url+"' />");
+					})
+					//$('#contenido').json(galeries);
+					$('#loading').hide();
+					mecount++;
+				}
+			});
+		}
+	});
+});
+</script>
